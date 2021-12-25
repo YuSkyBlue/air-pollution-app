@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.techtown.air.pollution.app.data.Repository
 import org.techtown.air.pollution.app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -81,7 +82,13 @@ class MainActivity : AppCompatActivity() {
                 cancellationTokenSource!!.token
             ).addOnSuccessListener {location ->
                 scope.launch {
+                    val monitroingStation =
+                        Repository.getNearbyMonitoringStation(location.latitude,location.longitude)
 
+                    val measuredValue =
+                        Repository.getLatestAirQualityData(monitroingStation!!.stationName!!)
+
+                    binding.textView.text = measuredValue.toString()
                 }
             }
 
